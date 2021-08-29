@@ -1,0 +1,20 @@
+{% load crispy_forms_tags %}
+
+<div class="search_form">
+    <form action="" method="get">
+        {% csrf_token %}
+        {{ form|crispy }}
+
+        <input type="submit" value="Search">
+    </form>
+</div>
+
+<seaction>
+    {% if search_info %}
+        <h2>Found this {{ search }}</h2>
+        {% for search in search_info %}
+            <p>{{ search.search_keyword }} <i>Found({{ search.keyword_count }})</i></p>
+        {% endfor %}
+
+    {% endif %}
+</seaction>

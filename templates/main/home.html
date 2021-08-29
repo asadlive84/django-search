@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Qtec Search Engine</title>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+</head>
+<style>
+    ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    li {
+        display: inline;
+    }
+
+    .search_form{
+        margin-top: 30px;
+    }
+
+    {% block style %}{% endblock %}
+</style>
+<body>
+<h2>Simple Search Engine</h2>
+<nav>
+    <ul>
+        <li><a href="{% url 'main:homepage' %}">Home</a></li>
+        {% if user.is_authenticated %}
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'main:logout' %}">Logout</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Welcome</a>,to {{ user.email }}
+            </li>
+
+
+
+        {% else %}
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'main:login' %}">Login</a>
+            </li>
+
+        {% endif %}
+        {% if request.user.is_authenticated %} You're logged in {% else %}
+            <li><a href="{% url 'main:register' %}">register</a></li>
+        {% endif %}
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'main:results' %}">Search Results</a>
+        </li>
+    </ul>
+</nav>
+<section>
+    {% block content %} {% endblock content %}
+</section>
+
+{% if homepage %}
+    {% include 'main/search_form.html' %}
+{% endif %}
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+    $(function () {
+        var dateFormat = "yy-mm-dd",
+            from = $("#from")
+                .datepicker({
+                    defaultDate: "+1w",
+                    changeMonth: true,
+                    numberOfMonths: 1
+                })
+                .on("change", function () {
+                    to.datepicker("option", "minDate", getDate(this));
+                }),
+            to = $("#to").datepicker({
+                defaultDate: "+1w",
+                changeMonth: true,
+                numberOfMonths: 1
+            })
+                .on("change", function () {
+                    from.datepicker("option", "maxDate", getDate(this));
+                });
+
+        function getDate(element) {
+            var date;
+            try {
+                date = $.datepicker.parseDate(dateFormat, element.value);
+            } catch (error) {
+                date = null;
+            }
+
+            return date;
+        }
+    });
+</script>
+</body>
+</html>

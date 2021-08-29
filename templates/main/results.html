@@ -1,0 +1,113 @@
+{% extends "main/home.html" %} {% load crispy_forms_tags %}
+
+
+{% block style %}
+
+
+
+    table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    }
+
+    td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+    }
+
+    tr:nth-child(even) {
+    background-color: #dddddd;
+    }
+
+
+{% endblock %}
+
+{% block content %}
+
+
+    <h2>Search Table</h2>
+    <form action="" method="post">
+        {% csrf_token %}
+
+
+        <label for="users">Choose a user:</label>
+        <select name="users" id="users">
+            <option value="None">----------</option>
+            {% for u in user %}
+                <option value="{{ u.id }}">{{ u.email }}</option>
+            {% endfor %}
+
+        </select>
+
+        <label for="keyword">keyword</label>
+        <input type="text" id="keyword" name="keyword">
+
+        <label for="from_date">From</label>
+        <input type="text" id="from" name="from_date">
+
+        <label for="to_date">to</label>
+        <input type="text" id="to" name="to_date">
+
+        <input type="submit" value="Submit">
+
+
+    </form>
+
+    {% if is_searched %}
+        <h3>Searched:</h3>
+        {% if search_user %}
+            <p>User: {{ search_user }}</p>
+        {% endif %}
+        {% if keyword %}
+            <p>Search Keyword: {{ keyword }}</p>
+        {% endif %}
+        {% if from_date %}
+            <p>From Date: {{ from_date }}</p>
+        {% endif %}
+        {% if to_date %}
+            <p>To Date: {{ to_date }}</p>
+        {% endif %}
+    {% endif %}
+
+    {% if results %}
+        <table>
+            <tr>
+                <td>SL</td>
+                <th>Keyword</th>
+                <th>Created at</th>
+                <th>updated</th>
+                <th>Keyword count by user</th>
+                <th>User</th>
+                <th>Keyword count</th>
+            </tr>
+            {% for result in results %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ result.search_keyword }}</td>
+                    <td>{{ result.created_at }}</td>
+                    <td>{{ result.updated_at }}</td>
+                    <td>{{ result.keyword_count_by_user }}</td>
+                    {% if result.user.all %}
+                        <td>
+                            {% for user in result.user.all %}
+                                {{ user.email }},
+                            {% endfor %}
+                        </td>
+                    {% else %}
+                        <td>No user</td>
+                    {% endif %}
+                    <td>{{ result.keyword_count }}</td>
+                </tr>
+            {% endfor %}
+
+
+        </table>
+    {% else %}
+        <p>No keyword found</p>
+    {% endif %}
+
+
+
+{% endblock %}
